@@ -6,7 +6,7 @@ import org.jscience.mathematics.function.Term;
 import org.jscience.mathematics.function.Variable;
 import org.jscience.mathematics.number.Complex;
 public class Test {
-    private static double epsilon = 1E-14;
+    private static double epsilon = 1E-10;
     private static final DecimalFormat form =
             new DecimalFormat(" 0.00000000000000E0;-0.00000000000000E0");
     /**
@@ -18,7 +18,7 @@ public class Test {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		testiranje(5,1,-1,0,0,0,2,1,2);
+		testiranje(5,1,9,24,20,0,2,1,3);
 		
 //		testiranje(1,-2,1);
 //		
@@ -50,11 +50,12 @@ public class Test {
 
 		Polynomial<Complex> px1 = Polinom.create(niz1);
 		RationalFunction<Complex> rat = RationalFunction.valueOf(px1, px);
-		
+		//px1.times(px);
         
 		System.out.println("Racionalna funkcija:" + rat);
         System.out.println("Polinom: " + px);
         Complex[] roots = Polinom.roots(niz);
+        Arrays.sort(roots);
         int [] b = duplicates(roots);
 		System.out.println("duplikati:" );
 		for (int i = 0; i < b.length; i++) {
@@ -66,30 +67,43 @@ public class Test {
 		//rat=rat.getDivisor().differentiate(px.getVariable("x"));
 		System.out.println("diferenciran:"+px);
 		RationalFunction<Complex> temp = rat;
-		  Variable<Complex> x = new Variable.Local<Complex>("x");
-	        Polynomial<Complex> t = Polynomial.valueOf(Complex.ONE, x);
-		for (int i = 0; i < b.length; i++) {
+		Variable<Complex> x = new Variable.Local<Complex>("x");
+	    Polynomial<Complex> t =
+	    		Polynomial.valueOf(Complex.ONE, Term.valueOf(px1.getVariable("x"), 1));
+	   
+	    Complex ck =Complex.ONE;
+		
+	    for (int i = 0; i < b.length; i++) {
 			if (b[i]>1){
-				t= t.minus(Polynomial.valueOf(roots[i], Term.valueOf(x, 0 )));
+				t= t.minus(Polynomial.valueOf(roots[i], Term.valueOf(px1.getVariable("x"), 0 )));
+				//t= t.plus(roots[i].times(-1));
+				
+				System.out.println("t minus: "+ t);
 				t=t.pow(b[i]);
-				temp =RationalFunction.valueOf(temp.getDividend().times(t), temp.getDivisor());
-				for (int j = b[i]; j < 0; j--) {
+				temp =RationalFunction.valueOf(px1, px.times((Complex.ONE).divide(t)));
+				ck=temp.getDividend().evaluate(roots[i]).divide(temp.getDivisor().evaluate(roots[i]));
+				
+				System.out.println("parametar:"+ck);
+				for (int j = b[i]-1 ; j > 0 ; j--) {
 					temp.differentiate(temp.getVariable("x"));//dupla for petlja za svaku nulu
+					ck=temp.getDividend().evaluate(roots[i]).divide(rat.getDivisor().evaluate(roots[i]));
+		        	ck=ck.times(1/factoriel(b[i]-j));
+					System.out.println("parametar:"+ck);
 				}
-				temp.evaluate(roots[i]);//dodaj promeljivu
+				//temp.evaluate(roots[i]);//dodaj promeljivu
 				//i+=b[i];
+				
+			}
+			else{
+				rat= RationalFunction.valueOf(px1,rat.getDivisor().differentiate(px.getVariable("x")));
+		        ck=rat.getDividend().evaluate(roots[i]).divide(rat.getDivisor().evaluate(roots[i]));
+		        System.out.println("parametar:"+ck);
+		        	
 				
 			}
 		}
 		
-		rat= RationalFunction.valueOf(px1,rat.getDivisor().differentiate(px.getVariable("x")));
-        for (int i = 0; i < roots.length; i++) {
-        	Complex ck =Complex.ONE;
-        	
-        	ck=rat.getDividend().evaluate(roots[i]).divide(rat.getDivisor().evaluate(roots[i]));
-        	System.out.println("parametar:"+ck);
-        	
-		}
+		
 //        for (Complex complex : roots) {
 //			System.out.println(complex.toText());
 //		}
@@ -140,6 +154,16 @@ public class Test {
         double dr = a.getReal() - b.getReal();
         double di = a.getImaginary() - b.getImaginary();
         return Math.abs(dr) < epsilon && Math.abs(di) < epsilon;
+    }
+    
+
+    private static int factoriel(int n){
+      if (n <= 1)
+          return 1;
+
+          else
+
+              return n * factoriel(n-1);
     }
     
     private static int[] duplicates(Complex[] c){
