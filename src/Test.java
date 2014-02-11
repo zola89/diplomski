@@ -19,7 +19,7 @@ public class Test {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		testiranje(5,1,9,24,20,0,2,1,3);
-		
+		//testiranje(5,1,1,-3,-5,-2,3,1,0,-2);
 //		testiranje(1,-2,1);
 //		
 //		testiranje(1,0,0,-1);
@@ -46,9 +46,10 @@ public class Test {
 			niz1[i] = Complex.valueOf(a[i+(int)duzina+2], 0);
 			
 		}
-		Polynomial<Complex> px = Polinom.create(niz);
+		Variable<Complex> x = new Variable.Local<Complex>("x");
+		Polynomial<Complex> px = Polinom.create(x,niz);
 
-		Polynomial<Complex> px1 = Polinom.create(niz1);
+		Polynomial<Complex> px1 = Polinom.create(x,niz1);
 		RationalFunction<Complex> rat = RationalFunction.valueOf(px1, px);
 		//px1.times(px);
         
@@ -67,7 +68,8 @@ public class Test {
 		//rat=rat.getDivisor().differentiate(px.getVariable("x"));
 		System.out.println("diferenciran:"+px);
 		RationalFunction<Complex> temp = rat;
-		Variable<Complex> x = new Variable.Local<Complex>("x");
+		RationalFunction<Complex> temp1 = rat;
+
 	    Polynomial<Complex> t =
 	    		Polynomial.valueOf(Complex.ONE, Term.valueOf(px1.getVariable("x"), 1));
 	   
@@ -80,23 +82,30 @@ public class Test {
 				
 				System.out.println("t minus: "+ t);
 				t=t.pow(b[i]);
-				temp =RationalFunction.valueOf(px1, px.times((Complex.ONE).divide(t)));
-				ck=temp.getDividend().evaluate(roots[i]).divide(temp.getDivisor().evaluate(roots[i]));
+				System.out.println("t pow: "+ t);
 				
+				temp =RationalFunction.valueOf(px1.times(t), px);
+				temp1 =RationalFunction.valueOf(px, t);
+				System.out.println("temp rational: "+temp);
+
+				System.out.println("temp1 rational: "+temp1);
+				//temp = temp.times(that)
+				ck=temp.getDividend().evaluate(roots[i]).divide(temp.getDivisor().evaluate(roots[i]));
+				ck=temp.evaluate(roots[i]);
 				System.out.println("parametar:"+ck);
 				for (int j = b[i]-1 ; j > 0 ; j--) {
-					temp.differentiate(temp.getVariable("x"));//dupla for petlja za svaku nulu
-					ck=temp.getDividend().evaluate(roots[i]).divide(rat.getDivisor().evaluate(roots[i]));
+					temp=temp.differentiate(temp.getVariable("x"));//dupla for petlja za svaku nulu
+					ck=temp.getDividend().evaluate(roots[i]).divide(temp.getDivisor().evaluate(roots[i]));
 		        	ck=ck.times(1/factoriel(b[i]-j));
 					System.out.println("parametar:"+ck);
 				}
 				//temp.evaluate(roots[i]);//dodaj promeljivu
-				//i+=b[i];
+				i+=b[i]-1;
 				
 			}
 			else{
-				rat= RationalFunction.valueOf(px1,rat.getDivisor().differentiate(px.getVariable("x")));
-		        ck=rat.getDividend().evaluate(roots[i]).divide(rat.getDivisor().evaluate(roots[i]));
+				temp= RationalFunction.valueOf(px1,rat.getDivisor().differentiate(px.getVariable("x")));
+		        ck=temp.getDividend().evaluate(roots[i]).divide(temp.getDivisor().evaluate(roots[i]));
 		        System.out.println("parametar:"+ck);
 		        	
 				

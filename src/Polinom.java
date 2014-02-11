@@ -22,6 +22,15 @@ public class Polinom {
         return px;
     }
     
+    public static Polynomial<Complex> create( Variable<Complex> x, Complex... a) {
+        //Variable<Complex> x = new Variable.Local<Complex>("x");
+        Polynomial<Complex> px = Polynomial.valueOf(Complex.ZERO, x);
+        for (int i = 0, e = a.length - 1; i < a.length; i++, e--) {
+            px = px.plus(Polynomial.valueOf(a[i], Term.valueOf(x, e)));
+        }
+        return px;
+    }
+    
     public static Complex eval(Complex[] ca, Complex x) {
         Complex result = ca[0];
         for (int i = 1; i < ca.length; i++) {
