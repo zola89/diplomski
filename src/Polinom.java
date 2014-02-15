@@ -7,7 +7,7 @@ import org.jscience.mathematics.number.Complex;
 
 public class Polinom {
 	 
-	private static final int ITER = 999;
+	private static final int ITER = 9999;
     private static double epsilon = 1E-15;
 	    
 	    
@@ -23,7 +23,6 @@ public class Polinom {
     }
     
     public static Polynomial<Complex> create( Variable<Complex> x, Complex... a) {
-        //Variable<Complex> x = new Variable.Local<Complex>("x");
         Polynomial<Complex> px = Polynomial.valueOf(Complex.ZERO, x);
         for (int i = 0, e = a.length - 1; i < a.length; i++, e--) {
             px = px.plus(Polynomial.valueOf(a[i], Term.valueOf(x, e)));
@@ -39,18 +38,6 @@ public class Polinom {
         return result;
     }
     
-//    public static Complex koef(RationalFunction<Complex> c){
-//    	Variable<Complex> x = new Variable.Local<Complex>("x");
-//    	Complex temp = Complex.ONE;
-//    	temp = (c.getDividend().)/
-//    	return 0;
-//    }
-//    
-//    public static Polynomial<Complex>diff(Polynomial<Complex> px){
-//        Variable<Complex> x = new Variable.Local<Complex>("x");
-//    	Polynomial<Complex> dx = px.differentiate(x);
-//        return dx;
-//    }
     
     public static Complex[] roots(Complex[] ca){
     	Complex[] a0 = new Complex[ca.length - 1];
