@@ -7,7 +7,7 @@ import org.jscience.mathematics.number.Complex;
 
 public class Polinom {
 	 
-	private static final int ITER = 9999;
+	private static final int ITER = 99999;
     private static double epsilon = 1E-15;
 	    
 	    
