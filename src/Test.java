@@ -6,6 +6,21 @@ import org.jscience.mathematics.function.Term;
 import org.jscience.mathematics.function.Variable;
 import org.jscience.mathematics.number.Complex;
 
+/**
+ * Klasa <b>Test</b> predstavlja utility(usluznu) klasu koju koristimo za rastavljanje racionalne funckije na parcijalne razlomke
+ * 
+ * Za izracunavanje nula imenioca, tj imenioca parcijalnih razlomaka koristimo Durand-Kernerov Metod tj usluznu klasu Polinom.
+ * <br>Za izracunavanje brojioca parcijalnih razlomaka koristimo metod rezidijuma.
+ * 
+ * <br>Za manipulaciju racionalnim funkcijama i pomoc pri simbolickom diferenciranju koristi se biblioteka <a href="http://jscience.org/">
+ *      JScience</a>
+ * 
+ * @author  <a href="mailto:zola89@gmail.com">Lazar Bogdanovic</a>
+ * @version 1.0 February 18, 2014
+ * @see <a href="http://en.wikipedia.org/wiki/Partial_fraction_decomposition#Residue_method">
+ *      Wikipedia: Partial Fractions Decomposition</a>
+ */
+
 public class Test {
 	private static double epsilon = 1E-6;
 	private static double epsilon2 = 1E-3;
@@ -26,7 +41,7 @@ public class Test {
 		//testiranje(4, 1, -4, 8, 0,3, 4, -8, 16);
 		testiranje(8, 1, -3, 5, -7, 7, -5, 3,-1, 7, 2, -4, 5,-3, 1, 3, 0);
 	}
-
+	//
 	private static void tesiranje(Complex... c) {
 		Polynomial<Complex> px = Polinom.create(c);
 		System.out.println("Polinom: " + px);
@@ -35,7 +50,12 @@ public class Test {
 			System.out.println(complex.toText());
 		}
 	}
-
+	/**
+	 * Metoda testiranje(double... a) prima argumente u formi  br_koeficijenata_imenioca, ... koeficijenti imenioca..., br_koeficijenata_brojioca, ...koeficijenti brojioca... 
+	 * Ispis se vrsi trenutno u konzoli
+	 * 
+	 * @param a niz double koefincijenata imenioca i brojioca 
+	 */
 	private static void testiranje(double... a) {
 		// da baci izuzetak ako a[0] i a[a[0]+1] nisu celi brojevi
 		long duzina = Math.round(a[0]);
@@ -73,6 +93,7 @@ public class Test {
 				Term.valueOf(px1.getVariable("x"), 1));
 
 		Complex ck = Complex.ONE;
+		Complex[] param = new Complex[roots.length];
 		for (int i = 0; i < b.length; i++) {
 			if (b[i] > 1) {
 				t = t.minus(Polynomial.valueOf(roots[i],
@@ -85,6 +106,7 @@ public class Test {
 				// System.out.println("temp rational: "+temp);
 
 				ck = temp.evaluate(roots[i]);
+				param[i+b[i]-1]=ck;
 				System.out.println("parametar:" + ck);
 				for (int j = b[i] - 1; j > 0; j--) {
 					// System.out.println("temp before diff: "+temp);
@@ -98,6 +120,7 @@ public class Test {
 
 					ck = temp.evaluate(roots[i]);
 					ck = ck.times(1 / factoriel(b[i] - j));
+					param[i + j- 1]=ck;
 					System.out.println("parametar:" + ck);
 				}
 				i += b[i] - 1;
@@ -107,13 +130,22 @@ public class Test {
 						.differentiate(px.getVariable("x")));
 				ck = temp.getDividend().evaluate(roots[i])
 						.divide(temp.getDivisor().evaluate(roots[i]));
+				param[i]=ck;
 				System.out.println("parametar:" + ck);
 
 			}
 		}
+		System.out.println("kraj");
+		ispis(roots, param);
 
 	}
-
+	/**
+	 * Metoda za ispis nula imenioca racionalne funkcije tj, imenioca parcijalnih razlomaka
+	 * Ispis se vrsi u konzoli trenutno
+	 * 
+	 * @param ca niz kompleksnih koeficijenata imenioca racionalne funkcije
+	 * @param r  niz kompleksnih nula imenioca racionalne funkcije
+	 */
 	private static void validate(Complex[] ca, Complex... r) {
 		double max = 0.0;
 		Arrays.sort(r);
@@ -145,19 +177,40 @@ public class Test {
 		System.out.println("Error: "
 				+ (max < epsilon ? "< " + epsilon : form.format(max)) + "\n");
 	}
-
+	/**
+	 * Provera da li su brojevi a i b kompleksno konjugovani sa zadatom tacnoscu
+	 * 
+	 * @param a prvi kompleksni broj za koji vrsimo poredjenje
+	 * @param b drugi kompleksni broj za koji vrsimo poredjenje
+	 * @return boolean vrednost da li su brojevi kompleksno konjugovani
+	 */
 	private static boolean conjugate(Complex a, Complex b) {
 		double dr = a.getReal() - b.getReal();
 		double di = Math.abs(a.getImaginary()) - Math.abs(b.getImaginary());
 		return Math.abs(dr) < epsilon && Math.abs(di) < epsilon;
 	}
-
+	/**
+	 * Provera da li su brojevi a i b jednaki, sa zadatom tacnoscu
+	 * 
+	 * @param a prvi kompleksni broj za koji vrsimo poredjenje
+	 * @param b drugi kompleksni broj za koji vrsimo poredjenje
+	 * @return boolean vrednost da li su brojevi jednaki
+	 */
 	private static boolean equalNumbers(Complex a, Complex b) {
 		double dr = a.getReal() - b.getReal();
 		double di = a.getImaginary() - b.getImaginary();
 		return Math.abs(dr) < epsilon2 && Math.abs(di) < epsilon2;
 	}
-
+	/**
+	 * Metoda divisor() je pomocna metoda koju koristimo prilikom izracunavanja koeficijenata brojioca parc. razlomaka visestrukih nula.
+	 * <br>Njome izracunavamo imenilac racionalne funkcije. 
+	 * 
+	 * @param a sve nule imenioca 
+	 * @param b nivo visestrukosti
+	 * @param root nula imenioca
+	 * @param px imenilac racionalne funkcije
+	 * @return Vraca se polinom, pratkicno imenilac podeljen sa svim visetrukim nulama odredjene nule imenioca 
+	 */
 	private static Polynomial<Complex> divisor(Complex[] a, int[] b,
 			Complex root, Polynomial<Complex> px) {
 		Polynomial<Complex> t;
@@ -177,14 +230,25 @@ public class Test {
 		return sum;
 
 	}
-
+	/**
+	 * Metoda za izracunavanje faktorijela
+	 * 
+	 * @param n broj za koji hocemo da izracunamo njegov faktorijel
+	 * @return faktorijel broja n
+	 */
 	private static double factoriel(int n) {
 		if (n <= 1)
 			return 1;
 		else
 			return n * factoriel(n - 1);
 	}
-
+	
+	/**
+	 * Metoda duplicates(Complex[] c) je pomocna metoda koju koristimo za izracunavanje koeficijenata brojioca parcijalnih razlomaka prilikom javljanja visetrukih nula
+	 * 
+	 * @param c niz kompleksnih brojeva
+	 * @return vraca niz integera koliko se puta javlja ista nula
+	 */
 	private static int[] duplicates(Complex[] c) {
 		int t = 1;
 		int[] b = new int[c.length];
@@ -208,6 +272,25 @@ public class Test {
 
 		return b;
 
+	}
+	
+	private static void ispis(Complex[] roots, Complex[] param){
+		RationalFunction<Complex> temp;
+		for (int i = 0; i < roots.length; i++) {
+			double re = param[i].getReal();
+			double im = param[i].getImaginary();
+			double reR = roots[i].getReal();
+			double imR = roots[i].getImaginary();
+			if (Math.abs(re) < epsilon)
+				re = 0;
+			if (Math.abs(im) < epsilon)
+				im = 0;
+			Complex c = Complex.valueOf(reR, imR);
+			
+			System.out.print(Complex.valueOf(re, im) + "/" + "("+" "+ "x"+" "+"-"+" "+ c + ") ");
+			if(i!=roots.length-1) System.out.print("+ ");
+		}
+		
 	}
 
 }
