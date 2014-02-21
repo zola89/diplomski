@@ -25,7 +25,8 @@ public class Test {
 	private static double epsilon = 1E-6;
 	private static double epsilon2 = 1E-3;
 	private static final DecimalFormat form = new DecimalFormat(
-			" 0.00000000000000E0;-0.00000000000000E0");
+			//" 0.00000000000000E0;-0.00000000000000E0");
+			" #.####;-#.####");
 
 	/**
 	 * @param args
@@ -287,7 +288,7 @@ public class Test {
 				im = 0;
 			Complex c = Complex.valueOf(reR, imR);
 			
-			System.out.print(Complex.valueOf(re, im) + "/" + "("+" "+ "x"+" "+"-"+" "+ c + ") ");
+			System.out.print(form.format(Complex.valueOf(re, im)) + "/" + "("+" "+ "x"+" "+"-"+" "+ form.format(c) + ") ");
 			if(i!=roots.length-1) System.out.print("+ ");
 		}
 		
