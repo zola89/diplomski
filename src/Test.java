@@ -43,7 +43,7 @@ public class Test {
 		testiranje(8, 1, -3, 5, -7, 7, -5, 3,-1, 7, 2, -4, 5,-3, 1, 3, 0);
 	}
 	//
-	private static void tesiranje(Complex... c) {
+	public static void tesiranje(Complex... c) {
 		Polynomial<Complex> px = Polinom.create(c);
 		System.out.println("Polinom: " + px);
 		Complex[] roots = Polinom.roots(c);
@@ -57,7 +57,7 @@ public class Test {
 	 * 
 	 * @param a niz double koefincijenata imenioca i brojioca 
 	 */
-	private static void testiranje(double... a) {
+	public static String testiranje(double... a) {
 		// da baci izuzetak ako a[0] i a[a[0]+1] nisu celi brojevi
 		long duzina = Math.round(a[0]);
 		Complex[] niz = new Complex[(int) duzina];
@@ -137,8 +137,9 @@ public class Test {
 			}
 		}
 		System.out.println("kraj");
-		ispis(roots, param);
-
+		String str;
+		str=  ispis(roots, param);
+		return str;
 	}
 	/**
 	 * Metoda za ispis nula imenioca racionalne funkcije tj, imenioca parcijalnih razlomaka
@@ -275,8 +276,11 @@ public class Test {
 
 	}
 	
-	private static void ispis(Complex[] roots, Complex[] param){
-		RationalFunction<Complex> temp;
+	private static String ispis(Complex[] roots, Complex[] param){
+		//RationalFunction<Complex> temp;
+		String ch,chR;
+		StringBuilder s =new StringBuilder();
+		
 		for (int i = 0; i < roots.length; i++) {
 			double re = param[i].getReal();
 			double im = param[i].getImaginary();
@@ -286,11 +290,24 @@ public class Test {
 				re = 0;
 			if (Math.abs(im) < epsilon)
 				im = 0;
-			Complex c = Complex.valueOf(reR, imR);
+			//Complex c = Complex.valueOf(reR, imR);
 			
-			System.out.print(form.format(Complex.valueOf(re, im)) + "/" + "("+" "+ "x"+" "+"-"+" "+ form.format(c) + ") ");
-			if(i!=roots.length-1) System.out.print("+ ");
+			if(im>=0) ch=" +";
+			 else  ch=" -";
+			if(imR>=0) chR=" +";
+			 else  chR=" -";
+			 System.out.print("(" + form.format(re) + ch + form.format(Math.abs(im)) + "i )" + "/" + "("+" "+ "x"+" "+"-"+" ("+  form.format(reR) + chR + form.format(Math.abs(imR))+"i )" + ") ");
+			
+			 s.append("\\frac {" + form.format(re) + ch + form.format(Math.abs(im)) + "i }"  + "{"+" "+ "x"+" "+"-"+" ("+  form.format(reR) + chR + form.format(Math.abs(imR))+"i )" + "}");
+			 
+			 if(i!=roots.length-1){
+				 System.out.print("+ ");
+				 s.append("+ ");
+			 }
+			
+			
 		}
+		return s.toString();
 		
 	}
 
