@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -39,6 +40,7 @@ public class UserInterface extends JFrame implements ActionListener {
 	JMenuItem primer1 = new JMenuItem("Primer 1");
 	JMenuItem primer2 = new JMenuItem("Primer 2");
 	JMenuItem primer3 = new JMenuItem("Primer 3");
+	JMenuItem primer4 = new JMenuItem("Primer 4");
 	
 	JMenu menu2 = new JMenu("Pomoc");
 	JMenuItem uputstvo = new JMenuItem("Uputstvo");
@@ -76,6 +78,12 @@ public class UserInterface extends JFrame implements ActionListener {
 		menu1.add(primer1);
 		menu1.add(primer2);
 		menu1.add(primer3);
+		menu1.add(primer4);
+		
+		primer1.addActionListener(this);
+		primer2.addActionListener(this);
+		primer3.addActionListener(this);
+		primer4.addActionListener(this);
 		
 		menu2.add(uputstvo);
 		menu2.add(author);
@@ -117,32 +125,19 @@ public class UserInterface extends JFrame implements ActionListener {
 		Object src=e.getSource();
 		//test
 		String str;
+		double[] testParam;
 		if(src.equals(test)){
 			
-			//int num=Integer.parseInt(input.getText());
-			//ensures that primes object has a long enough range
-			//if(primes.getLength()<num){
-			//	primes=new Primes(num,primes);
-			//}
-			//finds prime from object
-			//if(primes.test(num)){
-			//	print(num+" is prime");
-			//	primesFound.setText("1");
-			//}else{
-			//	print(num+" is not prime");
-			//	primesFound.setText("0");
-			//}
-			//printEnd();
-			//process=0;
-			 
-			str= Test.testiranje(8, 1, -3, 5, -7, 7, -5, 3,-1, 7, 2, -4, 5,-3, 1, 3, 0);
+			testParam = parseText(); 
+			str=Test.testiranje(testParam);
+			//str= Test.testiranje(8, 1, -3, 5, -7, 7, -5, 3,-1, 7, 2, -4, 5,-3, 1, 3, 0);
 			LatexWriter writer;
 		       writer = this.latexPanel.getWriter();
 		       //writer.clear();
-			 
-		       writer.println( "\\frac {V_m} {K_M+S}",15);
+		       writer.println("\n\nNesredjeni\\quad parcijalni\\quad razlomci\\quad u\\quad kompleksnom\\quad obliku:", 15);
+		       //writer.println( "\\frac {V_m} {K_M+S}",15);
 		       writer.println(str,15);
-		       //writer.println("\n\nRezultati:", 15);
+		       
 		       this.latexPanel.repaint();
 		}
 		if(src.equals(clear)){
@@ -151,8 +146,54 @@ public class UserInterface extends JFrame implements ActionListener {
 	        writer.clear();
 	        this.latexPanel.repaint();
 		}
+		
+		if(src.equals(primer1)){
+			this.brojText.setText("");
+	        this.brojText.setText("1,3");
+	        this.imeText.setText("");
+	        this.imeText.setText("1,9,24,20,0");
+		}
+		
+		if(src.equals(primer2)){
+			this.brojText.setText("");
+			this.brojText.setText("1, 0, -2");
+			this.imeText.setText("");
+			this.imeText.setText("1, 1, -3, -5, -2");
+		}
+		
+		if(src.equals(primer3)){
+			this.brojText.setText("");
+	        this.brojText.setText("2, -4, 5,-3, 1, 3, 0");
+	        this.imeText.setText("");
+	        this.imeText.setText("1, -3, 5, -7, 7, -5, 3,-1");
+		}
+		
+		if(src.equals(primer4)){
+			this.brojText.setText("");
+	        this.brojText.setText("4, -8, 16");
+	        this.imeText.setText("");
+	        this.imeText.setText("1, -4, 8, 0");
+		}
+		
 	}
-	
+	private double[] parseText(){
+		String[] strbr = this.brojText.getText().split(",");
+		String[] strim = this.imeText.getText().split(",");
+		int i=1;
+		double[] temp = new double[strbr.length+strim.length+2];
+		temp[0]=strim.length;
+		for (String line : strim) {
+			temp[i]= Double.parseDouble(line);
+			i++;
+		}
+		temp[i]=strbr.length;
+		i++;
+		for (String line : strbr) {
+			temp[i]= Double.parseDouble(line);
+			i++;
+		}
+		return temp;
+	}  
 	public static void main(String[] args){
 		new UserInterface();
 	}
