@@ -139,7 +139,8 @@ public class Test {
 		System.out.println("kraj");
 		String str;
 		str=  ispis(roots, param);
-		return str;
+		//return str;
+		return rat.toString();
 	}
 	/**
 	 * Metoda za ispis nula imenioca racionalne funkcije tj, imenioca parcijalnih razlomaka
