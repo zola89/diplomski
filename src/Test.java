@@ -367,7 +367,7 @@ public class Test {
 			if(duplicates[i]>0){
 				if( Math.abs(imR) > 0 ){
 					//s.append("\\frac {" + form.format(re) + ch + form.format(Math.abs(im)) + "i }"  + "{"+" "+ "x"+" "+"-"+" ("+  form.format(reR) + chR + form.format(Math.abs(imR))+"i )" + "}");
-					 
+					
 					//i+= duplicates[i]-1;break;
 				}
 				else{
