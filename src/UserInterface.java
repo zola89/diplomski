@@ -26,13 +26,7 @@ public class UserInterface extends JFrame implements ActionListener {
 	JPanel p = new JPanel();
 	//center
 	LatexPaneResizable latexPanel = new LatexPaneResizable();
-	//JTextArea pTextArea =  new JTextArea();
-	//JScrollPane pScroll = new JScrollPane(
-	//		pTextArea,
-	//		JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-	//		JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-			
-	//);
+
 	
 	//menu
 	JMenuBar menuBar = new JMenuBar();
@@ -61,7 +55,7 @@ public class UserInterface extends JFrame implements ActionListener {
 	JTextField imeText = new JTextField(10);
 	public UserInterface(){
 		super("Partial Fractions Decomposition");
-		setSize(600,400);
+		setSize(800,400);
 		setResizable(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		

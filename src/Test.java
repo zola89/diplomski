@@ -145,6 +145,8 @@ public class Test {
 		
 		str.append(ispis(roots, param));
 		str.append(" \\\\ ");
+		str.append(ispis2(roots, param, px1, b));
+		str.append(" \\\\ ");
 
 		return str.toString();
 		//return rat.toString();
@@ -233,7 +235,7 @@ public class Test {
 	 * @return Vraca se polinom, pratkicno imenilac podeljen sa svim visetrukim nulama odredjene nule imenioca 
 	 */
 	private static Polynomial<Complex> divisor(Complex[] a, int[] b,
-			Complex root, Polynomial<Complex> px) {
+		Complex root, Polynomial<Complex> px) {
 		Polynomial<Complex> t;
 		Polynomial<Complex> sum = Polynomial.valueOf(Complex.ONE,
 				Term.valueOf(px.getVariable("x"), 0));
@@ -330,5 +332,83 @@ public class Test {
 		return s.toString();
 		
 	}
+	
+
+	private static String ispis2(Complex[] roots, Complex[] param, Polynomial<Complex> px, int[] duplicates){
+		RationalFunction<Complex> temp1,temp2;
+		String ch,chR;
+		StringBuilder s =new StringBuilder();
+		s.append("sredjeni\\quad parcijalni\\quad razlomci\\quad u\\quad kompleksnom\\quad obliku:");
+		s.append(" \\\\ ");
+		Polynomial<Complex> broj = Polynomial.valueOf(Complex.ONE,
+				Term.valueOf(px.getVariable("x"), 0));
+		Polynomial<Complex> imen = Polynomial.valueOf(Complex.ONE,
+				Term.valueOf(px.getVariable("x"), 1));
+		Polynomial<Complex> broj1 = Polynomial.valueOf(Complex.ONE,
+				Term.valueOf(px.getVariable("x"), 0));
+		Polynomial<Complex> imen1 = Polynomial.valueOf(Complex.ONE,
+				Term.valueOf(px.getVariable("x"), 1));
+		for (int i = 0; i < roots.length; i++) {
+			
+			double re = param[i].getReal();
+			double im = param[i].getImaginary();
+			double reR = roots[i].getReal();
+			double imR = roots[i].getImaginary();
+			if (Math.abs(reR) < epsilon)
+				re = 0;
+			if (Math.abs(imR) < epsilon)
+				imR = 0;
+			//Complex c = Complex.valueOf(reR, imR);
+			if(im>=0) ch=" +";
+			 else  ch=" -";
+			if(imR>=0) chR=" +";
+			 else  chR=" -";
+			
+			if(duplicates[i]>0){
+				if( Math.abs(imR) > 0 ){
+					//s.append("\\frac {" + form.format(re) + ch + form.format(Math.abs(im)) + "i }"  + "{"+" "+ "x"+" "+"-"+" ("+  form.format(reR) + chR + form.format(Math.abs(imR))+"i )" + "}");
+					 
+					//i+= duplicates[i]-1;break;
+				}
+				else{
+					for (int j = 0; j < duplicates[i]; j++) {
+						 re = param[i+j].getReal();
+						 im = param[i+j].getImaginary();
+						 
+						 if(j==0)
+							 s.append("\\frac {" + form.format(re) + ch + form.format(Math.abs(im)) + "i }"  + "{"+" "+ "x"+" "+"-"+" ("+  form.format(reR) + chR + form.format(Math.abs(imR))+"i )" + "}");
+						 
+						 else{
+							s.append("\\frac {" + form.format(re) + ch + form.format(Math.abs(im)) + "i }"  + "{"+ "( " +" "+ "x"+" "+"-"+" ("+  form.format(reR) + chR + form.format(Math.abs(imR))+"i )" + " )^"+(j+1) + "}");
+							
+						 }
+						if((i+j)!=roots.length-1){
+							 //System.out.print("+ ");
+							 s.append("+ ");
+						 }
+					}
+					i+=duplicates[i]-1;
+					continue;
+				}
+				
+			
+			}
+			
+			
+			 System.out.print("(" + form.format(re) + ch + form.format(Math.abs(im)) + "i )" + "/" + "("+" "+ "x"+" "+"-"+" ("+  form.format(reR) + chR + form.format(Math.abs(imR))+"i )" + ") ");
+			
+			 s.append("\\frac {" + form.format(re) + ch + form.format(Math.abs(im)) + "i }"  + "{"+" "+ "x"+" "+"-"+" ("+  form.format(reR) + chR + form.format(Math.abs(imR))+"i )" + "}");
+			 
+			 if(i!=roots.length-1){
+				 System.out.print("+ ");
+				 s.append("+ ");
+			 }
+			
+			
+		}
+		return s.toString();
+		
+	}
+	
 
 }
