@@ -77,9 +77,11 @@ public class Test {
 
 		Polynomial<Complex> px1 = Polinom.create(x, niz1);
 		RationalFunction<Complex> rat = RationalFunction.valueOf(px1, px);
-		String str;
-		System.out.println("Racionalna funkcija:" + rat);
+		StringBuilder str = new StringBuilder();
+		System.out.println("Racionalna \\quad funkcija:" + rat);
 		System.out.println("Polinom: " + px);
+		
+		str.append("Racionalna\\quad funkcija:" + rat +" \\\\ ");
 		Complex[] roots = Polinom.roots(niz);
 		Arrays.sort(roots);
 		int[] b = duplicates(roots);
@@ -88,7 +90,8 @@ public class Test {
 			System.out.println(b[i]);
 
 		}
-		str = validate(niz, roots);
+		
+		str.append(validate(niz, roots));
 
 		RationalFunction<Complex> temp = rat;
 
@@ -140,8 +143,10 @@ public class Test {
 		}
 		System.out.println("kraj");
 		
-		//str=  ispis(roots, param);
-		return str;
+		str.append(ispis(roots, param));
+		str.append(" \\\\ ");
+
+		return str.toString();
 		//return rat.toString();
 	}
 	/**
@@ -190,6 +195,7 @@ public class Test {
 		}
 		System.out.println("Error: "
 				+ (max < epsilon ? "< " + epsilon : form.format(max)) + "\n");
+		str.append(" \\\\ ");
 		return str.toString();
 	}
 	/**
@@ -293,7 +299,8 @@ public class Test {
 		//RationalFunction<Complex> temp;
 		String ch,chR;
 		StringBuilder s =new StringBuilder();
-		
+		s.append("Nesredjeni\\quad parcijalni\\quad razlomci\\quad u\\quad kompleksnom\\quad obliku:");
+		s.append(" \\\\ ");
 		for (int i = 0; i < roots.length; i++) {
 			double re = param[i].getReal();
 			double im = param[i].getImaginary();

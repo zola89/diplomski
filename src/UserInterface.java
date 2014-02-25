@@ -134,7 +134,7 @@ public class UserInterface extends JFrame implements ActionListener {
 			LatexWriter writer;
 		       writer = this.latexPanel.getWriter();
 		       //writer.clear();
-		       writer.println("\n\nNesredjeni\\quad parcijalni\\quad razlomci\\quad u\\quad kompleksnom\\quad obliku:", 15);
+		       //writer.println("Nesredjeni\\quad parcijalni\\quad razlomci\\quad u\\quad kompleksnom\\quad obliku:", 15);
 		       //writer.println( "\\frac {V_m} {K_M+S}",15);
 		       writer.println(str,15);
 		       
