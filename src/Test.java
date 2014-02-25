@@ -6,6 +6,8 @@ import org.jscience.mathematics.function.Term;
 import org.jscience.mathematics.function.Variable;
 import org.jscience.mathematics.number.Complex;
 
+import com.sun.org.apache.xml.internal.utils.StringBufferPool;
+
 /**
  * Klasa <b>Test</b> predstavlja utility(usluznu) klasu koju koristimo za rastavljanje racionalne funckije na parcijalne razlomke
  * 
@@ -75,7 +77,7 @@ public class Test {
 
 		Polynomial<Complex> px1 = Polinom.create(x, niz1);
 		RationalFunction<Complex> rat = RationalFunction.valueOf(px1, px);
-
+		String str;
 		System.out.println("Racionalna funkcija:" + rat);
 		System.out.println("Polinom: " + px);
 		Complex[] roots = Polinom.roots(niz);
@@ -86,7 +88,7 @@ public class Test {
 			System.out.println(b[i]);
 
 		}
-		validate(niz, roots);
+		str = validate(niz, roots);
 
 		RationalFunction<Complex> temp = rat;
 
@@ -137,10 +139,10 @@ public class Test {
 			}
 		}
 		System.out.println("kraj");
-		String str;
-		str=  ispis(roots, param);
-		//return str;
-		return rat.toString();
+		
+		//str=  ispis(roots, param);
+		return str;
+		//return rat.toString();
 	}
 	/**
 	 * Metoda za ispis nula imenioca racionalne funkcije tj, imenioca parcijalnih razlomaka
@@ -149,10 +151,11 @@ public class Test {
 	 * @param ca niz kompleksnih koeficijenata imenioca racionalne funkcije
 	 * @param r  niz kompleksnih nula imenioca racionalne funkcije
 	 */
-	private static void validate(Complex[] ca, Complex... r) {
+	private static String validate(Complex[] ca, Complex... r) {
 		double max = 0.0;
 		Arrays.sort(r);
 		int ix = 0;
+		StringBuilder str = new StringBuilder();
 		while (ix < r.length) {
 			Complex error = Polinom.eval(ca, r[ix]).minus(Complex.ZERO);
 			max = Math.max(max, error.magnitude());
@@ -164,21 +167,30 @@ public class Test {
 				im = 0;
 			if (im == 0) {
 				System.out.println("Real: " + form.format(re));
+				str.append("Realna \\quad nula: " + form.format(re)+ " \\\\ ");
 			} else {
 				if (ix + 1 < r.length && conjugate(r[ix], r[ix + 1])) {
 					System.out.println("Comp: " + form.format(re) + " +-"
 							+ form.format(Math.abs(im)) + "i");
+					str.append("Konjugovano\\quad kompleksni\\quad par: " + form.format(re) + " +-"
+							+ form.format(Math.abs(im)) + "i"+" \\\\ ");
 					ix++;
 				} else {
 					System.out.println("Comp: " + form.format(re)
 							+ (im < 0 ? " -" : " +")
 							+ form.format(Math.abs(im)) + "i");
+					str.append("Kompleksna\\quad nula: " + form.format(re));
+					if (im < 0) str.append(" -");
+					else str.append(" +");
+					str.append(form.format(Math.abs(im)) + "i"+ " \\\\ ");
+					
 				}
 			}
 			ix++;
 		}
 		System.out.println("Error: "
 				+ (max < epsilon ? "< " + epsilon : form.format(max)) + "\n");
+		return str.toString();
 	}
 	/**
 	 * Provera da li su brojevi a i b kompleksno konjugovani sa zadatom tacnoscu
