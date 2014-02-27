@@ -130,14 +130,16 @@ public class UserInterface extends JFrame implements ActionListener {
 		Object src=e.getSource();
 		//test
 		String str;
-		double[] testParam;
+		//double[] testParam;
 		if(src.equals(test)){
-			double[] test;
+			//double[] test;
 			
-			test= parseText21();
-			testParam = parseText();
+			//test= parseText21();
+			//testParam = parseText();
 			String[] oba = this.parsText.getText().split("/");
-			str=Test.testiranje(parseText2(oba[1]),parseText2(oba[0]));
+			double[] testic;
+			testic = merge(parseText2(oba[1]),parseText2(oba[0]));
+			str=Test.testiranje(testic);
 			//str= Test.testiranje(8, 1, -3, 5, -7, 7, -5, 3,-1, 7, 2, -4, 5,-3, 1, 3, 0);
 			LatexWriter writer;
 		       writer = this.latexPanel.getWriter();
@@ -315,6 +317,23 @@ public class UserInterface extends JFrame implements ActionListener {
 		
 		return rez;
 	}  
+	
+	public static double[] merge(final double[] ...arrays ) {
+	    int size = 0;
+	    for ( double[] a: arrays )
+	        size += a.length;
+
+	        double[] res = new double[size];
+
+	        int destPos = 0;
+	        for ( int i = 0; i < arrays.length; i++ ) {
+	            if ( i > 0 ) destPos += arrays[i-1].length;
+	            int length = arrays[i].length;
+	            System.arraycopy(arrays[i], 0, res, destPos, length);
+	        }
+
+	        return res;
+	}
 	
 	public static void main(String[] args){
 		new UserInterface();
