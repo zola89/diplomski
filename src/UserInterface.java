@@ -70,9 +70,6 @@ public class UserInterface extends JFrame implements ActionListener {
 		
 		p.setLayout(new BorderLayout());
 		p.setBorder(new EmptyBorder(5, 0, 0, 5));
-		//pTextArea.setEditable(false);
-		//pTextArea.setLineWrap(true);
-		//pTextArea.setWrapStyleWord(true);
 		latexPanel.setBackgroundColor(Color.WHITE);
 		p.add(latexPanel,BorderLayout.CENTER);
 		
@@ -126,15 +123,12 @@ public class UserInterface extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		
 		Object src=e.getSource();
-		//test
 		String str;
 		//double[] testParam;
 		if(src.equals(test)){
-			//double[] test;
 			
-			//test= parseText21();
 			//testParam = parseText();
 			String[] oba = this.parsText.getText().split("/");
 			double[] testic;
@@ -209,10 +203,6 @@ public class UserInterface extends JFrame implements ActionListener {
 		Pattern monomial = Pattern.compile("([+|-]?)([0-9]*)(x)(\\^([1-9][0-9]*))?|([+|-]?[0-9]+)");
 		
 	    Matcher m = monomial.matcher(par);
-	    //int p = m.groupCount();
-	    //int x = Integer.parseInt(valx);
-	    //int value;
-	    //int total = 0;
 	    m.find();
 	    String pow = m.group(5);
 	    double[] temp = new double[Integer.parseInt(pow)+2];
@@ -235,88 +225,16 @@ public class UserInterface extends JFrame implements ActionListener {
 	        if (m.group(6)!= null){
 	        	temp[temp.length-1]=Integer.parseInt(m.group(6));
 	        }
-	        
-//	        if ("-".equals(m.group(1)))
-//	            value = -value;
-//
-//	        total += value;
-	    	System.out.println(m);
+
+	        System.out.println(m);
 	    	
 	    }
 
-	    
-	    //return total;
-		 
-//		String[] strbr = this.brojText.getText().split(",");
-//		String[] strim = this.imeText.getText().split(",");
-//		int i=1;
-//		double[] temp = new double[strbr.length+strim.length+2];
-//		temp[0]=strim.length;
-//		for (String line : strim) {
-//			temp[i]= Double.parseDouble(line);
-//			i++;
-//		}
-//		temp[i]=strbr.length;
-//		i++;
-//		for (String line : strbr) {
-//			temp[i]= Double.parseDouble(line);
-//			i++;
-//		}
+
 		return temp;
 	}  
 	
-	private double[] parseText21(){
-		String par = this.parsText.getText();
-		String[] oba = this.parsText.getText().split("/");
-//		
-		double[] temp = new double[100];
-////		double[] drugi = oba[1];
-//		  List<String> l1 = Arrays.asList(healthMessages1);
-//		  l1.addAll(Arrays.asList(healthMessages2));
-//		  HealthMessage[] result = l1.toArray();
-//		
-//		char result[] = new char[info.length + data.length];
-//		System.arraycopy(info, 0, result, 0, info.length);
-//		System.arraycopy(data, 0, result, info.length, data.length);		
 
-		
-		double[] temp1,temp2;
-		for (int j = 0; j < oba.length; j++) {
-			if(j==0)temp1=parseText2(oba[j]);
-			if(j==1)temp2=parseText2(oba[j]);
-			temp[0]=1;
-			
-		}
-		
-		double[] rez = new double[100];
-//		double[] rez = new double[temp1.length + temp2.length];
-//		System.arraycopy(temp1, 0, rez, 0, temp1.length);
-//		System.arraycopy(temp2, 0, rez, temp1.length, temp2.length);	
-		
-//		List<double[]> l1 = new List<double[]>() {
-//		};
-//		for (String string : oba) {
-//			l1.addAll(Arrays.asList(parseText2(string)));
-//		}
-//		int i=0,k=0;
-//
-//		for (double[] ds : l1) {
-//			i+=ds.length;
-//		}
-//		
-//		double[] d= new double[i];
-//		for (double[] ds : l1) {
-//			for (int j = 0; j < ds.length; j++) {
-//				d[k]=ds[j];
-//				k++;
-//			}
-//		}
-//		
-//		
-//		Object[] rezultat = l1.toArray();
-		
-		return rez;
-	}  
 	
 	public static double[] merge(final double[] ...arrays ) {
 	    int size = 0;
