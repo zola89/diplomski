@@ -32,7 +32,6 @@ public class Test {
 	private static double epsilon = 1E-6;
 	private static double epsilon2 = 1E-3;
 	private static final DecimalFormat form = new DecimalFormat(
-	// " 0.00000000000000E0;-0.00000000000000E0");
 			" #.####;-#.####");
 
 	/**
@@ -91,19 +90,18 @@ public class Test {
 		System.out.println("Racionalna \\quad funkcija:" + rat);
 		System.out.println("Polinom: " + px);
 
-		str.append("Racionalna\\quad funkcija:" + rat + " \\\\ "+ " \\\\ "+ " \\\\ ");
-		str.append("Polinom\\quad imenioca\\quad cije\\quad nule\\quad nalazimo\\quad DK\\quad metodom:" + " \\\\ " + px + " \\\\ ");
+		str.append("\\textbf{\\underline{Racionalna\\quad funkcija:}}"+ " \\\\ " + rat + " \\\\ "+ " \\\\ "+ " \\\\ ");
+		str.append("\\textbf{\\underline{Polinom\\quad imenioca\\quad cije\\quad nule\\quad nalazimo\\quad DK\\quad metodom:}}" + " \\\\ " + px + " \\\\ ");
 		str.append("\\\\ ");
 
 		Complex[] roots = Polinom.roots(niz);
 		Arrays.sort(roots);
 		int[] b = duplicates(roots);
-		System.out.println("duplikati:");
+		System.out.print("duplikati: ");
 		for (int i = 0; i < b.length; i++) {
-			System.out.println(b[i]);
-
+			System.out.print(b[i]+" ");
 		}
-
+		System.out.println("\n ");
 		str.append(validate(niz, roots));
 
 		RationalFunction<Complex> temp = rat;
@@ -122,22 +120,13 @@ public class Test {
 
 				temp = RationalFunction.valueOf(px1,
 						divisor(roots, b, roots[i], px1));
-				// System.out.println("temp rational: "+temp);
 
 				ck = temp.evaluate(roots[i]);
 				param[i + b[i] - 1] = ck;
 				System.out.println("parametar:" + ck);
 				for (int j = b[i] - 1; j > 0; j--) {
-					// System.out.println("temp before diff: "+temp);
-					temp = temp.differentiate(temp.getVariable("x"));// dupla
-																		// for
-																		// petlja
-																		// za
-																		// svaku
-																		// visestruku
-																		// nulu
-					// System.out.println("temp diff: "+temp);
-
+					// dupla for petlja za svaku visestruku nulu
+					temp = temp.differentiate(temp.getVariable("x"));
 					ck = temp.evaluate(roots[i]);
 					ck = ck.times(1 / factoriel(b[i] - j));
 					param[i + j - 1] = ck;
@@ -156,7 +145,7 @@ public class Test {
 
 			}
 		}
-		System.out.println("kraj");
+		System.out.println("\nkraj");
 		str.append(" \\\\ "+ " \\\\ "+ " \\\\ ");
 		str.append(ispis(roots, param, b));
 		str.append(" \\\\ "+ " \\\\ "+ " \\\\ ");
@@ -375,8 +364,8 @@ public class Test {
 	private static String ispis(Complex[] roots, Complex[] param, int[] duplicates) {
 		String ch, chR;
 		StringBuilder s = new StringBuilder();
-		s.append("Nesredjeni\\quad parcijalni\\quad razlomci\\quad u\\quad kompleksnom\\quad obliku:");
-		s.append(" \\\\ ");
+		s.append("\\textbf{\\underline{Nesredjeni\\quad parcijalni\\quad razlomci\\quad u\\quad kompleksnom\\quad obliku:}}");
+		s.append(" \\\\ "+" \\\\ "+" \\\\ ");
 		for (int i = 0; i < roots.length; i++) {
 
 			double re = param[i].getReal();
@@ -422,7 +411,6 @@ public class Test {
 
 						}
 						if ((i + j) != roots.length - 1) {
-							// System.out.print("+ ");
 							s.append("+ ");
 						}
 					}
@@ -432,20 +420,14 @@ public class Test {
 
 			}
 
-			System.out.print("(" + form.format(re) + ch
-					+ form.format(Math.abs(im)) + "i )" + "/" + "(" + " " + "x"
-					+ " " + "-" + " (" + form.format(reR) + chR
-					+ form.format(Math.abs(imR)) + "i )" + ") ");
 
 			s.append("\\frac {" + form.format(re) + ch
 					+ form.format(Math.abs(im)) + "i }" + "{" + " " + "x" + " "
 					+ "-" + " (" + form.format(reR) + chR
 					+ form.format(Math.abs(imR)) + "i )" + "}");
 
-			if (i != roots.length - 1) {
-				System.out.print("+ ");
+			if (i != roots.length - 1) 
 				s.append("+ ");
-			}
 
 		}
 		s.append(" \\\\ ");
@@ -471,8 +453,8 @@ public class Test {
 		RationalFunction<Complex> temp1, temp2;
 		String ch, chR;
 		StringBuilder s = new StringBuilder();
-		s.append("Sredjeni\\quad parcijalni\\quad razlomci\\quad u \\quad kanonskom \\quad obiliku:");
-		s.append(" \\\\ ");
+		s.append("\\textbf{\\underline{Sredjeni\\quad parcijalni\\quad razlomci\\quad u \\quad kanonskom \\quad obiliku:}}");
+		s.append(" \\\\ "+" \\\\ "+" \\\\ ");
 		Polynomial<Complex> broj = Polynomial.valueOf(Complex.ONE,
 				Term.valueOf(px.getVariable("x"), 0));
 		Polynomial<Complex> imen = Polynomial.valueOf(Complex.ONE,
@@ -538,7 +520,7 @@ public class Test {
 			}
 			if (i + 1 < roots.length && conjugate(roots[i], roots[i + 1])
 					&& duplicates[i] == 1) {
-				//System.out.println("KONJUGOVANO");
+				
 				imen = imen.minus(Polynomial.valueOf(roots[i],
 						Term.valueOf(px.getVariable("x"), 0)));
 				broj = Polynomial.valueOf(param[i],
@@ -550,29 +532,25 @@ public class Test {
 				temp1 = RationalFunction.valueOf(broj, imen);
 				temp2 = RationalFunction.valueOf(broj1, imen1);
 				temp1 = temp1.plus(temp2);
-				//System.out.println("Racionalna funkcija: " + temp1);
+				
 
 				s.append(temp1.toString());
 				if (i + 2 < roots.length) {
-					System.out.print("+ ");
+					
 					s.append("+ ");
 				}
 				i++;
 				continue;
 			}
 
-			System.out.print("(" + form.format(re) + ch
-					+ form.format(Math.abs(im)) + "i )" + "/" + "(" + " " + "x"
-					+ " " + "-" + " (" + form.format(reR) + chR
-					+ form.format(Math.abs(imR)) + "i )" + ") ");
-
+			
 			s.append("\\frac {" + form.format(re) + ch
 					+ form.format(Math.abs(im)) + "i }" + "{" + " " + "x" + " "
 					+ "-" + " (" + form.format(reR) + chR
 					+ form.format(Math.abs(imR)) + "i )" + "}");
 
 			if (i != roots.length - 1) {
-				System.out.print("+ ");
+				
 				s.append("+ ");
 			}
 

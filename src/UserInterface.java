@@ -66,7 +66,7 @@ public class UserInterface extends JFrame implements ActionListener {
 	JTextField parsText = new JTextField(10);
 	public UserInterface(){
 		super("Partial Fractions Decomposition");
-		setSize(800,400);
+		setSize(850,600);
 		setResizable(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
