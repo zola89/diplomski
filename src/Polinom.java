@@ -1,5 +1,4 @@
 import org.jscience.mathematics.function.Polynomial;
-import org.jscience.mathematics.function.RationalFunction;
 import org.jscience.mathematics.function.Term;
 import org.jscience.mathematics.function.Variable;
 import org.jscience.mathematics.number.Complex;

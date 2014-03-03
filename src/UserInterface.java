@@ -3,12 +3,6 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,25 +10,28 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 
 import LatexWrapper.LatexPaneResizable;
 import LatexWrapper.LatexWriter;
 
 
 public class UserInterface extends JFrame implements ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JPanel p = new JPanel();
 	//center
 	LatexPaneResizable latexPanel = new LatexPaneResizable();
 
 	
+	boolean flag = false;
 	//menu
 	JMenuBar menuBar = new JMenuBar();
 	JMenu menu1 = new JMenu("Primeri");
@@ -42,10 +39,15 @@ public class UserInterface extends JFrame implements ActionListener {
 	JMenuItem primer2 = new JMenuItem("Primer 2");
 	JMenuItem primer3 = new JMenuItem("Primer 3");
 	JMenuItem primer4 = new JMenuItem("Primer 4");
+	JMenuItem primer5 = new JMenuItem("Primer 5");
 	
 	JMenu menu2 = new JMenu("Pomoc");
 	JMenuItem uputstvo = new JMenuItem("Uputstvo");
 	JMenuItem author = new JMenuItem("O autoru");
+	
+	JMenu menu3 = new JMenu("Unos");
+	JMenuItem koef = new JMenuItem("Koeficijenti");
+	JMenuItem poli = new JMenuItem("Tekstualano");
 	
 	
 	//west
@@ -57,7 +59,7 @@ public class UserInterface extends JFrame implements ActionListener {
 	//south
 	JPanel south = new JPanel();
 	JLabel brojilac = new JLabel("Brojilac: ");
-	JLabel pars = new JLabel("Pars: ");
+	JLabel pars = new JLabel("Racionalna Funkcija: ");
 	JLabel imenilac = new JLabel("Imenilac: ");
 	JTextField brojText = new JTextField(10);
 	JTextField imeText = new JTextField(10);
@@ -79,16 +81,28 @@ public class UserInterface extends JFrame implements ActionListener {
 		menu1.add(primer2);
 		menu1.add(primer3);
 		menu1.add(primer4);
+		menu1.add(primer5);
 		
 		primer1.addActionListener(this);
 		primer2.addActionListener(this);
 		primer3.addActionListener(this);
 		primer4.addActionListener(this);
+		primer5.addActionListener(this);
 		
 		menu2.add(uputstvo);
 		menu2.add(author);
 		
+		uputstvo.addActionListener(this);
+		author.addActionListener(this);
+		
+		menu3.add(koef);
+		menu3.add(poli);
+		
+		koef.addActionListener(this);
+		poli.addActionListener(this);
+		
 		menuBar.add(menu1);
+		menuBar.add(menu3);
 		menuBar.add(menu2);
 		
 		setJMenuBar(menuBar);
@@ -104,6 +118,7 @@ public class UserInterface extends JFrame implements ActionListener {
 		p.add(west,BorderLayout.WEST);
 		brojilac.setHorizontalAlignment(SwingConstants.RIGHT);
 		imenilac.setHorizontalAlignment(SwingConstants.RIGHT);
+		pars.setHorizontalAlignment(SwingConstants.RIGHT);
 		//south
 		south.setLayout(new GridLayout(3,2,5,5));
 		south.add(brojilac);
@@ -114,6 +129,7 @@ public class UserInterface extends JFrame implements ActionListener {
 		south.add(parsText);
 		south.setBorder(new EmptyBorder(10, 10, 10, 10) );
 		
+		parsText.setEditable(false);
 		p.add(south,BorderLayout.SOUTH);
 		add(p);
 		setVisible(true);
@@ -126,14 +142,19 @@ public class UserInterface extends JFrame implements ActionListener {
 		
 		Object src=e.getSource();
 		String str;
-		//double[] testParam;
+		
 		if(src.equals(test)){
+			double[] testParam;
 			
-			//testParam = parseText();
-			String[] oba = this.parsText.getText().split("/");
-			double[] testic;
-			testic = merge(parseText2(oba[1]),parseText2(oba[0]));
-			str=Test.testiranje(testic);
+			if (flag){
+				String[] oba = this.parsText.getText().split("/");
+				testParam = Test.merge(Test.parseTextPolynomial(oba[1]),Test.parseTextPolynomial(oba[0]));
+			}else{
+				testParam = parseText();
+			}
+			
+			
+			str=Test.testiranje(testParam);
 			//str= Test.testiranje(8, 1, -3, 5, -7, 7, -5, 3,-1, 7, 2, -4, 5,-3, 1, 3, 0);
 			LatexWriter writer;
 		       writer = this.latexPanel.getWriter();
@@ -151,35 +172,130 @@ public class UserInterface extends JFrame implements ActionListener {
 	        this.latexPanel.repaint();
 		}
 		
+		if(src.equals(koef)){
+			flag = false;
+			this.parsText.setText("");
+			this.parsText.setEditable(false);
+			
+			this.imeText.setEditable(true);
+			this.brojText.setEditable(true);
+		}
+		
+		
+		if(src.equals(poli)){
+			flag= true;
+			this.imeText.setText("");
+			this.imeText.setEditable(false);
+			this.brojText.setText("");
+			this.brojText.setEditable(false);
+			
+			this.parsText.setEditable(true);
+		}
+		
 		if(src.equals(primer1)){
+			if(!flag){
 			this.brojText.setText("");
 	        this.brojText.setText("1,3");
 	        this.imeText.setText("");
 	        this.imeText.setText("1,9,24,20,0");
+			}
+			else{
+				this.parsText.setText("");
+				this.parsText.setText("x+3/x^4+9x^3+24x^2+20x");
+			}
 		}
 		
 		if(src.equals(primer2)){
+			if(!flag){
 			this.brojText.setText("");
 			this.brojText.setText("1, 0, -2");
 			this.imeText.setText("");
 			this.imeText.setText("1, 1, -3, -5, -2");
+			}
+			else{
+				this.parsText.setText("");
+				this.parsText.setText("x^2-2/x^4+x^3-3x^2-5x-2");
+			}
 		}
 		
 		if(src.equals(primer3)){
+			if(!flag){
 			this.brojText.setText("");
 	        this.brojText.setText("2, -4, 5,-3, 1, 3, 0");
 	        this.imeText.setText("");
 	        this.imeText.setText("1, -3, 5, -7, 7, -5, 3,-1");
+			}
+			else{
+				this.parsText.setText("");
+				this.parsText.setText("2x^6-4x^5+5x^4-3x^3+x^2+3x/x^7-3x^6+5x^5-7x^4+7x^3-5x^2+3x-1");
+			}
 		}
 		
 		if(src.equals(primer4)){
+			if(!flag){
 			this.brojText.setText("");
 	        this.brojText.setText("4, -8, 16");
 	        this.imeText.setText("");
 	        this.imeText.setText("1, -4, 8, 0");
+			}
+			else{
+				this.parsText.setText("");
+				this.parsText.setText("4x^2-8x+16/x^3-4x^2+8x");
+			}
 		}
 		
+		if(src.equals(primer5)){
+			if(!flag){
+			this.brojText.setText("");
+	        this.brojText.setText("1, 2");
+	        this.imeText.setText("");
+	        this.imeText.setText("1, -4, 4, 4, -5");
+			}
+			else{
+				this.parsText.setText("");
+				this.parsText.setText("x+2/x^4-4x^3+4x^2+4x-5");
+			}
+		}		
+		
+		if(src.equals(author)){
+			JOptionPane.showMessageDialog(
+					UserInterface.this.getParent(),
+					"Diplomski rad\n"
+							+ "\nJava aplet"
+							+ "\nza transoformaciju racionalne funkcije u parcijalne razlomke\n"
+							+ "\nLazar Bogdanovic 367/08"
+							+ "\nMart, 2014");
+		}
+		
+		if(src.equals(uputstvo)){
+			JOptionPane.showMessageDialog(
+					UserInterface.this.getParent(),
+					"Uputstvo za koriscenje apleta"
+							+ "\n"
+							+ "\nU padajucem meniju \"Unos\" odaberite "
+							+ "\n"
+							+ "\nili koeficijente za unos racionalne funkcije preko"
+							+ "\nkoeficijenata polinoma brojioca i imenioca u formi"
+							+ "\n npr 4,3,0,2 za polinom 4x^3+3x^2+2"
+							+ "\nili tekstualan unos racionalne funkcije preko"
+							+ "\nteksutalnog zapisa racionalne funkcije u formi"
+							+ "\n4x^2-8x+16/x^3-4x^2+8x"
+							+ "\nBez praznina izmedju!"
+							+ "\n"
+							+ "\nPritisnite dugme \"Test\" i trebalo bi da se u prozoru ispise postupak"
+							+ "\ndobijanja parcijalnih razlomaka"
+							+ "\n"
+							+ "\nMozete takodje izabrati u padajucem meniju, neke od ponudjenih primera"
+							+ "\n"
+							+ "\nHvala!");
+		}
 	}
+	
+	/**
+	 * parsirananje niza koeficijanata brojica i imenioca  
+	 * @return niz koeficijenata u formi potrebnoj za arugment metode testiranje(double...)
+	 */
+			
 	private double[] parseText(){
 		String[] strbr = this.brojText.getText().split(",");
 		String[] strim = this.imeText.getText().split(",");
@@ -199,59 +315,12 @@ public class UserInterface extends JFrame implements ActionListener {
 		return temp;
 	}  
 	
-	private double[] parseText2(String par){
-		Pattern monomial = Pattern.compile("([+|-]?)([0-9]*)(x)(\\^([1-9][0-9]*))?|([+|-]?[0-9]+)");
-		
-	    Matcher m = monomial.matcher(par);
-	    m.find();
-	    String pow = m.group(5);
-	    double[] temp = new double[Integer.parseInt(pow)+2];
-	    Arrays.fill(temp, 0);
-	    temp[0]= temp.length-1;
-	    int value,powint;
-	    m.reset();
-	    while (m.find()) {
-	    	String mul = m.group(2);
-	        value = (mul == null || mul.equals("")) ? 1 : Integer.parseInt(m.group(2));
-	        if(m.group(1)!=null){
-	        	if (m.group(1).equals("-") ) value*=-1;
-	        }
-	        pow = m.group(5);
-	        
-	        powint = (pow == null) ? 1: Integer.parseInt(pow);
-	        if ("x".equals(m.group(3)) )
-	        	temp[temp.length-1-powint]=value;
-	        
-	        if (m.group(6)!= null){
-	        	temp[temp.length-1]=Integer.parseInt(m.group(6));
-	        }
-
-	        System.out.println(m);
-	    	
-	    }
-
-
-		return temp;
-	}  
+	
+	
 	
 
 	
-	public static double[] merge(final double[] ...arrays ) {
-	    int size = 0;
-	    for ( double[] a: arrays )
-	        size += a.length;
-
-	        double[] res = new double[size];
-
-	        int destPos = 0;
-	        for ( int i = 0; i < arrays.length; i++ ) {
-	            if ( i > 0 ) destPos += arrays[i-1].length;
-	            int length = arrays[i].length;
-	            System.arraycopy(arrays[i], 0, res, destPos, length);
-	        }
-
-	        return res;
-	}
+	
 	
 	public static void main(String[] args){
 		new UserInterface();
