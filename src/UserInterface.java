@@ -201,7 +201,7 @@ public class UserInterface extends JFrame implements ActionListener {
 			}
 			else{
 				this.parsText.setText("");
-				this.parsText.setText("x+3/x^4+9x^3+24x^2+20x");
+				this.parsText.setText("(x+3)/(x^4+9x^3+24x^2+20x)");
 			}
 		}
 		
@@ -214,7 +214,7 @@ public class UserInterface extends JFrame implements ActionListener {
 			}
 			else{
 				this.parsText.setText("");
-				this.parsText.setText("x^2-2/x^4+x^3-3x^2-5x-2");
+				this.parsText.setText("(x^2-2)/(x^4+x^3-3x^2-5x-2)");
 			}
 		}
 		
@@ -227,7 +227,7 @@ public class UserInterface extends JFrame implements ActionListener {
 			}
 			else{
 				this.parsText.setText("");
-				this.parsText.setText("2x^6-4x^5+5x^4-3x^3+x^2+3x/x^7-3x^6+5x^5-7x^4+7x^3-5x^2+3x-1");
+				this.parsText.setText("(2x^6-4x^5+5x^4-3x^3+x^2+3x)/(x^7-3x^6+5x^5-7x^4+7x^3-5x^2+3x-1)");
 			}
 		}
 		
@@ -240,7 +240,7 @@ public class UserInterface extends JFrame implements ActionListener {
 			}
 			else{
 				this.parsText.setText("");
-				this.parsText.setText("4x^2-8x+16/x^3-4x^2+8x");
+				this.parsText.setText("(4x^2-8x+16)/(x^3-4x^2+8x)");
 			}
 		}
 		
@@ -253,7 +253,7 @@ public class UserInterface extends JFrame implements ActionListener {
 			}
 			else{
 				this.parsText.setText("");
-				this.parsText.setText("x+2/x^4-4x^3+4x^2+4x-5");
+				this.parsText.setText("(x+2)/(x^4-4x^3+4x^2+4x-5)");
 			}
 		}		
 		

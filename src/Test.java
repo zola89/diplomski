@@ -152,7 +152,9 @@ public class Test {
 		str.append(ispisFixed(roots, param, px1, b));
 		str.append(" \\\\ "+ " \\\\ "+ " \\\\ ");
 
-		return str.toString();
+		return str.toString().replace("+ 0i", "").replace("+0i","").replace("- 0i","").replace("-0i","")
+				.replace("(0","(").replace("( 0","(").replace(" - (  )", "");
+	
 	}
 	
 	/**
@@ -570,6 +572,7 @@ public class Test {
 	 */
 
 	public static double[] parseTextPolynomial(String par) {
+		par = par.replace("(", "").replace(")", "");
 		Pattern monomial = Pattern
 				.compile("([+|-]?)([0-9]*)(x)(\\^([1-9][0-9]*))?|([+|-]?[0-9]+)");
 
