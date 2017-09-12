@@ -2,8 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/lazar.bogdanovic/workspace/diplomski/jlatexmath-1.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/lazar.bogdanovic/workspace/diplomski/jscience.jar"/>
-	<classpathentry kind="lib" path="C:/Users/lazar.bogdanovic/workspace/diplomski/LatexWrapper.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="jlatexmath-1.0.0.jar"/>
+	<classpathentry kind="lib" path="jscience.jar"/>
+	<classpathentry kind="lib" path="LatexWrapper.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -4,6 +4,8 @@ import org.jscience.mathematics.function.Term;
 import org.jscience.mathematics.function.Variable;
 import org.jscience.mathematics.number.Complex;
 
+import com.laki.functiondecomposer.proxy.Polinom;
+
 /**
  * Klasa <b>Polinom</b> predstavlja utility(usluznu) klasu koju koristimo za manipulaciju polinomima u okviru zadatka rastavljanja racionalne funckije na parcijalne razlomke
  * <br>Za pronalazenje nula nelinearne polinomske funkcije koristimo Durand-Kernerov metod. Broj iteracija i tacnost su hardkodovani.
@@ -16,23 +18,18 @@ import org.jscience.mathematics.number.Complex;
  *      Wikipedia: Durand–Kerner method</a>
  */
 
-public class Polinom {
+public class PolinomImpl implements Polinom {
 	 
 	private static final int ITER = 99999;
     private static double epsilon = 1E-15;
-	    
-	/**
-	 * Prazan konstruktor    
-	 */
-	private Polinom() {}
 	
 	/**
 	 * 
 	 * @param a niz kompleksnih brojeva
 	 * @return  Vraca polinom sa kompleksnim koeficijentima oblika Polynomial<Complex>
 	 */
-	
-    public static Polynomial<Complex> create(Complex... a) {
+	@Override
+    public Polynomial<Complex> create(Complex... a) {
         Variable<Complex> x = new Variable.Local<Complex>("x");
         Polynomial<Complex> px = Polynomial.valueOf(Complex.ZERO, x);
         for (int i = 0, e = a.length - 1; i < a.length; i++, e--) {
@@ -46,7 +43,8 @@ public class Polinom {
      * @param a Niz kompleksnih brojeva
      * @return  Vraca polinom sa kompleksnim koeficijentima oblika Polynomial<Complex>
      */
-    public static Polynomial<Complex> create( Variable<Complex> x, Complex... a) {
+	@Override
+    public Polynomial<Complex> create( Variable<Complex> x, Complex... a) {
         Polynomial<Complex> px = Polynomial.valueOf(Complex.ZERO, x);
         for (int i = 0, e = a.length - 1; i < a.length; i++, e--) {
             px = px.plus(Polynomial.valueOf(a[i], Term.valueOf(x, e)));
@@ -60,8 +58,8 @@ public class Polinom {
      * @param x  Kompleksna vrednost x sa kojom vrsimo evaluaciju 
      * @return   Vraca kompleksnu vrednost polinoma u tacki x
      */
-    
-    public static Complex eval(Complex[] ca, Complex x) {
+    @Override
+    public Complex eval(Complex[] ca, Complex x) {
         Complex result = ca[0];
         for (int i = 1; i < ca.length; i++) {
            result = result.times(x).plus(ca[i]);
@@ -75,7 +73,8 @@ public class Polinom {
      * @param ca Niz kompleksnih koeficijenata polinoma
      * @return   Vraca kompleksne nule polinoma
      */
-    public static Complex[] roots(Complex[] ca){
+    @Override
+    public Complex[] roots(Complex[] ca){
     	Complex[] a0 = new Complex[ca.length - 1];
         Complex[] a1 = new Complex[ca.length - 1];
 
@@ -104,7 +103,7 @@ public class Polinom {
 					if (i!=j)result= a0[j].minus(a0[i]).times(result) ;//Q
 					
 				}
-	    		a1[j]= Polinom.eval(ca, a0[j]).times(-1.0).divide(result);//deltaZj
+	    		a1[j]= eval(ca, a0[j]).times(-1.0).divide(result);//deltaZj
 	    		if( a1[j].isLargerThan(Complex.ONE.times(delta))) 
 	    			delta = a1[j].magnitude();//if abs(Zj)>delta; delta= abs(Zj);
 			}

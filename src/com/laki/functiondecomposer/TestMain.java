@@ -10,6 +10,10 @@ import org.jscience.mathematics.function.Term;
 import org.jscience.mathematics.function.Variable;
 import org.jscience.mathematics.number.Complex;
 
+import com.laki.functiondecomposer.factoriel.FactorielCalculatorStrategy;
+import com.laki.functiondecomposer.proxy.Polinom;
+import com.laki.functiondecomposer.proxy.Polinoms;
+
 /**
  * Klasa <b>Test</b> predstavlja utility(usluznu) klasu koju koristimo za
  * rastavljanje racionalne funckije na parcijalne razlomke
@@ -29,32 +33,35 @@ import org.jscience.mathematics.number.Complex;
  *      Wikipedia: Partial Fractions Decomposition</a>
  */
 
-public class Test {
+public class TestMain {
 	private static double epsilon = 1E-6;
 	private static double epsilon2 = 1E-3;
 	private static final DecimalFormat form = new DecimalFormat(
 			" #.####;-#.####");
 
-	/**
-	 * @param args
-	 */
-
-	private Test() {
+	private Polinom polinom;
+	
+	private TestMain() {
 	}
 
-	public static void main(String[] args) {
-		// testiranje(5, 1, 9, 24, 20, 0, 2, 1, 3);
-		// testiranje(5, 1, 1, -3, -5, -2, 3, 1, 0, -2);
-		// testiranje(5, 1, -4, 4, 4, -5, 2, 1, 2);
-		// testiranje(4, 1, -4, 8, 0,3, 4, -8, 16);
-		testiranje(8, 1, -3, 5, -7, 7, -5, 3, -1, 7, 2, -4, 5, -3, 1, 3, 0);
+	private static TestMain instance = null;
+	
+	public static TestMain getInstance() {
+		if (instance == null) {
+			instance = new TestMain();
+			instance.initialize();
+		}
+		return instance;
 	}
 
-	//
-	public static void tesiranje(Complex... c) {
-		Polynomial<Complex> px = Polinom.create(c);
+	private void initialize() {
+		polinom = Polinoms.createPolinom();
+	}
+	
+	public void tesiranje(Complex... c) {
+		Polynomial<Complex> px = polinom.create(c);
 		System.out.println("Polinom: " + px);
-		Complex[] roots = Polinom.roots(c);
+		Complex[] roots = polinom.roots(c);
 		for (Complex complex : roots) {
 			System.out.println(complex.toText());
 		}
@@ -68,8 +75,9 @@ public class Test {
 	 * 
 	 * @param a
 	 *            niz double koefincijenata imenioca i brojioca
+	 * @param factorielCalculatorStrategy 
 	 */
-	public static String testiranje(double... a) {
+	public String testiranje(FactorielCalculatorStrategy factorielCalculatorStrategy, double... a) {
 		// da baci izuzetak ako a[0] i a[a[0]+1] nisu celi brojevi
 		long duzina = Math.round(a[0]);
 		Complex[] niz = new Complex[(int) duzina];
@@ -83,9 +91,9 @@ public class Test {
 
 		}
 		Variable<Complex> x = new Variable.Local<Complex>("x");
-		Polynomial<Complex> px = Polinom.create(x, niz);
+		Polynomial<Complex> px = polinom.create(x, niz);
 
-		Polynomial<Complex> px1 = Polinom.create(x, niz1);
+		Polynomial<Complex> px1 = polinom.create(x, niz1);
 		RationalFunction<Complex> rat = RationalFunction.valueOf(px1, px);
 		StringBuilder str = new StringBuilder();
 		System.out.println("Racionalna \\quad funkcija:" + rat);
@@ -95,7 +103,7 @@ public class Test {
 		str.append("\\textbf{\\underline{Polinom\\quad imenioca\\quad cije\\quad nule\\quad nalazimo\\quad DK\\quad metodom:}}" + " \\\\ " + px + " \\\\ ");
 		str.append("\\\\ ");
 
-		Complex[] roots = Polinom.roots(niz);
+		Complex[] roots = polinom.roots(niz);
 		Arrays.sort(roots);
 		int[] b = duplicates(roots);
 		System.out.print("duplikati: ");
@@ -112,6 +120,7 @@ public class Test {
 
 		Complex ck = Complex.ONE;
 		Complex[] param = new Complex[roots.length];
+		
 		for (int i = 0; i < b.length; i++) {
 			if (b[i] > 1) {
 				t = t.minus(Polynomial.valueOf(roots[i],
@@ -129,7 +138,7 @@ public class Test {
 					// dupla for petlja za svaku visestruku nulu
 					temp = temp.differentiate(temp.getVariable("x"));
 					ck = temp.evaluate(roots[i]);
-					ck = ck.times(1 / factoriel(b[i] - j));
+					ck = ck.times(1 / factorielCalculatorStrategy.calculate(b[i] - j));
 					param[i + j - 1] = ck;
 					System.out.println("parametar:" + ck);
 				}
@@ -167,13 +176,13 @@ public class Test {
 	 * @param r
 	 *            niz kompleksnih nula imenioca racionalne funkcije
 	 */
-	private static String validate(Complex[] ca, Complex... r) {
+	private String validate(Complex[] ca, Complex... r) {
 		double max = 0.0;
 		Arrays.sort(r);
 		int ix = 0;
 		StringBuilder str = new StringBuilder();
 		while (ix < r.length) {
-			Complex error = Polinom.eval(ca, r[ix]).minus(Complex.ZERO);
+			Complex error = polinom.eval(ca, r[ix]).minus(Complex.ZERO);
 			max = Math.max(max, error.magnitude());
 			double re = r[ix].getReal();
 			double im = r[ix].getImaginary();
@@ -222,7 +231,7 @@ public class Test {
 	 *            drugi kompleksni broj za koji vrsimo poredjenje
 	 * @return boolean vrednost da li su brojevi kompleksno konjugovani
 	 */
-	private static boolean conjugate(Complex a, Complex b) {
+	private boolean conjugate(Complex a, Complex b) {
 		double dr = a.getReal() - b.getReal();
 		double di = Math.abs(a.getImaginary()) - Math.abs(b.getImaginary());
 		return Math.abs(dr) < epsilon && Math.abs(di) < epsilon;
@@ -237,7 +246,7 @@ public class Test {
 	 *            drugi kompleksni broj za koji vrsimo poredjenje
 	 * @return boolean vrednost da li su brojevi jednaki
 	 */
-	private static boolean equalNumbers(Complex a, Complex b) {
+	private boolean equalNumbers(Complex a, Complex b) {
 		double dr = a.getReal() - b.getReal();
 		double di = a.getImaginary() - b.getImaginary();
 		return Math.abs(dr) < epsilon2 && Math.abs(di) < epsilon2;
@@ -259,7 +268,7 @@ public class Test {
 	 * @return Vraca se polinom, pratkicno imenilac podeljen sa svim visetrukim
 	 *         nulama odredjene nule imenioca
 	 */
-	private static Polynomial<Complex> divisor(Complex[] a, int[] b,
+	private  Polynomial<Complex> divisor(Complex[] a, int[] b,
 			Complex root, Polynomial<Complex> px) {
 		Polynomial<Complex> t;
 		Polynomial<Complex> sum = Polynomial.valueOf(Complex.ONE,
@@ -279,18 +288,8 @@ public class Test {
 
 	}
 
-	/**
-	 * Metoda za izracunavanje faktorijela
-	 * 
-	 * @param n
-	 *            broj za koji hocemo da izracunamo njegov faktorijel
-	 * @return faktorijel broja n
-	 */
-	private static double factoriel(int n) {
-		if (n <= 1)
-			return 1;
-		else
-			return n * factoriel(n - 1);
+	public double getFactoriel(int n, FactorielCalculatorStrategy strategy) {
+		return strategy.calculate(n);
 	}
 
 	/**
@@ -302,7 +301,7 @@ public class Test {
 	 *            niz kompleksnih brojeva
 	 * @return vraca niz integera koliko se puta javlja ista nula
 	 */
-	private static int[] duplicates(Complex[] c) {
+	private int[] duplicates(Complex[] c) {
 		int t = 1;
 		int[] b = new int[c.length];
 		b[0] = 1;
@@ -334,7 +333,7 @@ public class Test {
 	 *            double nizovi
 	 * @return spojeni niz
 	 */
-	public static double[] merge(final double[]... arrays) {
+	public double[] merge(final double[]... arrays) {
 		int size = 0;
 		for (double[] a : arrays)
 			size += a.length;
@@ -364,7 +363,7 @@ public class Test {
 	 *            niz duplikata
 	 * @return latex ispis parcijalnih razlomaka
 	 */
-	private static String ispis(Complex[] roots, Complex[] param, int[] duplicates) {
+	private String ispis(Complex[] roots, Complex[] param, int[] duplicates) {
 		String ch, chR;
 		StringBuilder s = new StringBuilder();
 		s.append("\\textbf{\\underline{Nesredjeni\\quad parcijalni\\quad razlomci\\quad u\\quad kompleksnom\\quad obliku:}}");
@@ -451,7 +450,7 @@ public class Test {
 	 *            niz duplikata
 	 * @return latex ispis parcijalnih razlomaka
 	 */
-	public static String ispisFixed(Complex[] roots, Complex[] param,
+	public String ispisFixed(Complex[] roots, Complex[] param,
 			Polynomial<Complex> px, int[] duplicates) {
 		RationalFunction<Complex> temp1, temp2;
 		String ch, chR;
@@ -572,7 +571,7 @@ public class Test {
 	 *         zatim redom koeficijenti pocevsi od najviseg
 	 */
 
-	public static double[] parseTextPolynomial(String par) {
+	public double[] parseTextPolynomial(String par) {
 		par = par.replace("(", "").replace(")", "");
 		Pattern monomial = Pattern
 				.compile("([+|-]?)([0-9]*)(x)(\\^([1-9][0-9]*))?|([+|-]?[0-9]+)");
